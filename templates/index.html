@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Multilingual Language Understanding - Gemini AI</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+                min-height: 100vh;
+                color: #333;
+            }
+    
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+    
+            .header {
+                text-align: center;
+                margin-bottom: 40px;
+                color: #fff;
+            }
+    
+            .header h1 {
+                font-size: 2.8rem;
+                margin-bottom: 10px;
+                text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
+            }
+    
+            .header p {
+                font-size: 1.2rem;
+                opacity: 0.95;
+            }
+    
+            .main-card {
+                background: #ffffff;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                overflow: hidden;
+                margin-bottom: 30px;
+            }
+    
+            .card-header {
+                background: linear-gradient(to right, #11998e, #38ef7d);
+                color: white;
+                padding: 30px;
+                text-align: center;
+            }
+    
+            .card-header h2 {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+    
+            .input-section {
+                padding: 40px;
+            }
+    
+            .form-group {
+                margin-bottom: 25px;
+            }
+    
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 600;
+                color: #333;
+            }
+    
+            .form-control {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #ccc;
+                border-radius: 10px;
+                font-size: 16px;
+                transition: all 0.3s ease;
+            }
+    
+            .form-control:focus {
+                outline: none;
+                border-color: #38ef7d;
+                box-shadow: 0 0 0 3px rgba(56, 239, 125, 0.2);
+            }
+    
+            .select-group {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+    
+            .btn {
+                background: linear-gradient(to right, #f7971e, #ffd200);
+                color: #333;
+                border: none;
+                padding: 15px 30px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+    
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            }
+    
+            .btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+    
+            .loading {
+                display: none;
+                text-align: center;
+                padding: 20px;
+            }
+    
+            .spinner {
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #11998e;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 10px;
+            }
+    
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+    
+            .results-section {
+                display: none;
+                padding: 40px;
+                background: #ecf0f1;
+            }
+    
+            .result-card {
+                background: white;
+                border-radius: 15px;
+                padding: 25px;
+                margin-bottom: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+    
+            .result-card h3 {
+                color: #11998e;
+                margin-bottom: 15px;
+            }
+    
+            .result-content {
+                background: #f0f4f7;
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 15px;
+            }
+    
+            .result-content h4 {
+                color: #444;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+    
+            .result-text {
+                font-family: 'Courier New', monospace;
+                background: #fff;
+                padding: 10px;
+                border-radius: 5px;
+                border-left: 4px solid #38ef7d;
+            }
+    
+            .examples-section {
+                background: #fff;
+                border-radius: 20px;
+                padding: 30px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            }
+    
+            .examples-section h3 {
+                color: #f7971e;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+    
+            .example-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+    
+            .example-card {
+                background: #f7f9fb;
+                border-radius: 10px;
+                padding: 20px;
+                border-left: 4px solid #11998e;
+            }
+    
+            .example-card h4 {
+                color: #555;
+                margin-bottom: 10px;
+            }
+    
+            .example-text {
+                font-style: italic;
+                color: #555;
+            }
+    
+            .example-intent {
+                background: #d1f2eb;
+                color: #117a65;
+                padding: 5px 10px;
+                border-radius: 15px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+    
+            .error-message {
+                background: #fdecea;
+                color: #c0392b;
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border-left: 4px solid #e74c3c;
+            }
+    
+            .success-message {
+                background: #eafaf1;
+                color: #27ae60;
+                padding: 15px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                border-left: 4px solid #2ecc71;
+            }
+    
+            @media (max-width: 768px) {
+                .select-group {
+                    grid-template-columns: 1fr;
+                }
+    
+                .header h1 {
+                    font-size: 2.2rem;
+                }
+    
+                .input-section, .results-section {
+                    padding: 20px;
+                }
+            }
+        </style>
+    </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-language"></i> Multilingual Language Understanding</h1>
+            <p>Powered by Google Gemini AI - Intent Detection & Slot Filling</p>
+        </div>
+
+        <div class="main-card">
+            <div class="card-header">
+                <h2><i class="fas fa-language"></i> Analyze Your Text</h2>
+                <p>Enter text in any supported language to detect intent and extract slots</p>
+            </div>
+
+            <div class="input-section">
+                <form id="analysisForm">
+                    <div class="form-group">
+                        <label for="utterance">
+                            <i class="fas fa-comment"></i> Enter your text:
+                        </label>
+                        <textarea 
+                            id="utterance" 
+                            class="form-control" 
+                            rows="4" 
+                            placeholder="Type your message here... (e.g., 'Remind me to call mom at 5 PM')"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <div class="select-group">
+                        <div class="form-group">
+                            <label for="language">
+                                <i class="fas fa-globe"></i> Language:
+                            </label>
+                            <select id="language" class="form-control">
+                                {% for code, lang in languages.items() %}
+                                <option value="{{ code }}">{{ lang.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="text-align: center;">
+                        <button type="submit" class="btn" id="analyzeBtn">
+                            <i class="fas fa-magic"></i> Analyze Text
+                        </button>
+                    </div>
+                </form>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing your text with Gemini AI...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="result-card">
+                <h3><i class="fas fa-bullseye"></i> Intent Detection</h3>
+                <div class="result-content">
+                    <h4>Original Result</h4>
+                    <div class="result-text" id="intentOriginal"></div>
+                </div>
+                <div class="result-content">
+                    <h4>English Translation</h4>
+                    <div class="result-text" id="intentTranslation"></div>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h3><i class="fas fa-tags"></i> Slot Filling</h3>
+                <div class="result-content">
+                    <h4>Original Result</h4>
+                    <div class="result-text" id="slotsOriginal"></div>
+                </div>
+                <div class="result-content">
+                    <h4>English Translation</h4>
+                    <div class="result-text" id="slotsTranslation"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples-section">
+            <h3><i class="fas fa-lightbulb"></i> Utterances</h3>
+            <div class="example-grid" id="examplesGrid">
+                <!-- Examples will be loaded dynamically -->
+            </div>
+            <div id="exampleUtterancesPair" style="margin-top:10px;">
+                <div class="example-text" id="originalUtterance"></div>
+                <div class="example-text" id="translatedUtterance"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentLanguage = 'english';
+        let currentDomain = 'reminder';
+
+        // DOM elements
+        const form = document.getElementById('analysisForm');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const languageSelect = document.getElementById('language');
+        const examplesGrid = document.getElementById('examplesGrid');
+        const utteranceInput = document.getElementById('utterance');
+        
+        // Event listeners
+        form.addEventListener('submit', handleAnalysis);
+        languageSelect.addEventListener('change', handleLanguageChange);
+        utteranceInput.addEventListener('input', updateExampleUtterance);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateExampleUtterance();
+        });
+
+        async function handleAnalysis(e) {
+            e.preventDefault();
+            
+            const utterance = document.getElementById('utterance').value.trim();
+            if (!utterance) {
+                showError('Please enter some text to analyze.');
+                return;
+            }
+
+            // Show loading
+            setLoading(true);
+            hideResults();
+            hideMessages();
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        utterance: utterance,
+                        language: currentLanguage,
+                        domain: currentDomain
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                    showSuccess('Analysis completed successfully!');
+                } else {
+                    showError(data.error || 'Analysis failed. Please try again.');
+                }
+            } catch (error) {
+                showError('Network error. Please check your connection and try again.');
+                console.error('Error:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function displayResults(data) {
+            // Display intent results
+            document.getElementById('intentOriginal').textContent = data.results.intent.original;
+            document.getElementById('intentTranslation').textContent = data.results.intent.translation;
+
+            // Display slot results
+            const slotsOriginal = typeof data.results.slots.original === 'object' 
+                ? JSON.stringify(data.results.slots.original, null, 2)
+                : data.results.slots.original;
+            document.getElementById('slotsOriginal').textContent = slotsOriginal;
+            document.getElementById('slotsTranslation').textContent = data.results.slots.translation;
+
+            // Show results section
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Always show both input and translated utterance
+            const utterance = utteranceInput.value.trim();
+            document.getElementById('originalUtterance').textContent = `Original: "${utterance}"`;
+            if (data.translated_utterance_selected_lang) {
+                document.getElementById('translatedUtterance').textContent = `Translation: "${data.translated_utterance_selected_lang}"`;
+            } else {
+                document.getElementById('translatedUtterance').textContent = '';
+            }
+        }
+
+        function handleLanguageChange(e) {
+            currentLanguage = e.target.value;
+        }
+
+        function updateExampleUtterance() {
+            const utterance = utteranceInput.value.trim();
+            examplesGrid.innerHTML = '';
+            const exampleCard = document.createElement('div');
+            exampleCard.className = 'example-card';
+            exampleCard.innerHTML = `
+                <h4>Example</h4>
+                <div class="example-text">"${utterance || 'Your input will appear here...'}"</div>
+            `;
+            examplesGrid.appendChild(exampleCard);
+            // Clear translated utterance placeholder on input change
+            document.getElementById('translatedUtterance').textContent = '';
+        }
+
+        function setLoading(isLoading) {
+            loading.style.display = isLoading ? 'block' : 'none';
+            analyzeBtn.disabled = isLoading;
+        }
+
+        function hideResults() {
+            resultsSection.style.display = 'none';
+        }
+
+        function showError(message) {
+            hideMessages();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            form.insertBefore(errorDiv, form.firstChild);
+        }
+
+        function showSuccess(message) {
+            hideMessages();
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            form.insertBefore(successDiv, form.firstChild);
+        }
+
+        function hideMessages() {
+            const messages = document.querySelectorAll('.error-message, .success-message');
+            messages.forEach(msg => msg.remove());
+        }
+    </script>
+</body>
+</html> 
